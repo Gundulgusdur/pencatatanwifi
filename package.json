@@ -30,11 +30,15 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "prisma": "^5.22.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   },
   "allowScripts": {
     "@prisma/client@5.22.0": true,
     "prisma@5.22.0": true,
     "@prisma/engines@5.22.0": true
+  },
+  "prisma": {
+    "seed": "ts-node prisma\\seed.ts"
   }
 }

@@ -9,9 +9,9 @@ datasource db {
 
 model Package {
   id        Int      @id @default(autoincrement())
-  packageName String  @db.VarChar(50)
-  bandwidth  String  @db.VarChar(20)
-  price      Decimal @db.Decimal(10, 2)
+  packageName String  @db.VarChar(50) @map("package_name")
+  bandwidth  String  @db.VarChar(20) @map("bandwidth")
+  price      Decimal @db.Decimal(10, 2) @map("price")
   customers  Customer[]
 
   @@map("packages")
@@ -19,12 +19,12 @@ model Package {
 
 model Customer {
   id          Int      @id @default(autoincrement())
-  name        String   @db.VarChar(100)
-  whatsapp    String   @db.VarChar(20)
-  ipAddress   String?  @db.VarChar(50)
-  packageId   Int
-  dueDateDay  Int
-  status      String   @default("active") @db.VarChar(20) // 'active' | 'isolated' | 'inactive'
+  name        String   @db.VarChar(100) @map("name")
+  whatsapp    String   @db.VarChar(20) @map("whatsapp")
+  ipAddress   String?  @db.VarChar(50) @map("ip_address")
+  packageId   Int      @map("package_id")
+  dueDateDay  Int      @map("due_date_day")
+  status      String   @default("active") @db.VarChar(20) @map("status") // 'active' | 'isolated' | 'inactive'
   package     Package  @relation(fields: [packageId], references: [id])
   invoices    Invoice[]
 
@@ -33,11 +33,11 @@ model Customer {
 
 model Invoice {
   id            Int      @id @default(autoincrement())
-  customerId    Int
-  billingPeriod String   @db.VarChar(7) // YYYY-MM
-  amount        Decimal  @db.Decimal(10, 2)
-  status        String   @default("unpaid") @db.VarChar(20) // 'unpaid' | 'paid'
-  paidAt        DateTime?
+  customerId    Int      @map("customer_id")
+  billingPeriod String   @db.VarChar(7) @map("billing_period") // YYYY-MM
+  amount        Decimal  @db.Decimal(10, 2) @map("amount")
+  status        String   @default("unpaid") @db.VarChar(20) @map("status") // 'unpaid' | 'paid'
+  paidAt        DateTime? @map("paid_at")
   customer      Customer @relation(fields: [customerId], references: [id])
 
   @@unique([customerId, billingPeriod])
