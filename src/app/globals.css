@@ -259,21 +259,6 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0.3px;
 }
 
-/* ---- Modal ---- */
-.pw-modal-content {
-  border: none;
-  border-radius: var(--pw-radius);
-  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.12);
-}
-.pw-modal-header {
-  border-bottom: 1px solid var(--pw-border);
-  background: #f8f9fa;
-  border-top-left-radius: var(--pw-radius);
-  border-top-right-radius: var(--pw-radius);
-}
-.pw-modal-body { padding: 1.5rem; }
-.pw-modal-footer { border-top: 1px solid var(--pw-border); }
-
 /* ---- Utilities ---- */
 .text-truncate-2 {
   display: -webkit-box;
@@ -315,44 +300,53 @@ section { margin-bottom: 2rem; }
   z-index: -9999;
 }
 
-/* ---- Modal fixes: ensure inputs can focus above sidebar ---- */
-.pw-sidebar {
-  z-index: 100;
-}
-.fade-overlay {
-  z-index: 1050 !important;
-}
-.pw-modal-wrap {
+/* ==========================================================================
+   MODAL — pola overlay tunggal.
+   Overlay = latar gelap sekaligus pembungkus. Konten adalah anak overlay,
+   sehingga selalu tampil di atas latar (tidak ada perang z-index).
+   ========================================================================== */
+.pw-modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1060;
-  display: none;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  outline: none;
 }
-.pw-modal-wrap.open {
-  display: flex;
-}
-.pw-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  z-index: 1055;
-  backdrop-filter: blur(2px);
-}
+
 .pw-modal-content {
-  position: relative;
-  z-index: 1060;
-  border: none;
+  background: var(--pw-card);
   border-radius: var(--pw-radius);
-  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 520px;
   max-height: 90vh;
   overflow-y: auto;
-  outline: none;
+}
+
+.pw-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--pw-border);
+  background: #f8f9fa;
+  border-top-left-radius: var(--pw-radius);
+  border-top-right-radius: var(--pw-radius);
+}
+
+.pw-modal-body {
+  padding: 1.5rem;
+}
+
+.pw-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--pw-border);
 }
 
 /* ---- Responsive improvements ---- */
@@ -374,11 +368,4 @@ section { margin-bottom: 2rem; }
     font-size: 0.875rem;
     padding: 0.375rem 0.75rem;
   }
-}
-
-/* Ensure form controls inside modal can receive focus */
-.pw-modal-wrap.open input,
-.pw-modal-wrap.open select,
-.pw-modal-wrap.open button {
-  touch-action: manipulation;
 }

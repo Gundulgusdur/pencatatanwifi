@@ -9,6 +9,7 @@ export type CustomerRow = {
   name: string;
   whatsapp: string;
   ipAddress: string | null;
+  packageId: number;
   packageName: string | null;
   packagePrice: number | null;
   dueDateDay: number;
@@ -132,6 +133,7 @@ export async function listCustomers(): Promise<CustomerRow[]> {
     name: r.name,
     whatsapp: r.whatsapp,
     ipAddress: r.ipAddress,
+    packageId: r.packageId,
     packageName: r.package?.packageName ?? null,
     packagePrice: r.package ? Number(r.package.price) : null,
     dueDateDay: r.dueDateDay,
