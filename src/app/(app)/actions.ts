@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
+import { requireAuth, getCurrentUser } from "@/lib/auth";
 
 export type CustomerRow = {
   id: number;
@@ -150,6 +151,7 @@ export async function createCustomer(data: {
   dueDateDay: number;
   status?: string;
 }) {
+  await requireAuth();
   return prisma.customer.create({
     data: {
       name: data.name,
@@ -173,6 +175,7 @@ export async function updateCustomer(
     status: string;
   }
 ) {
+  await requireAuth();
   return prisma.customer.update({
     where: { id },
     data: {
@@ -187,6 +190,7 @@ export async function updateCustomer(
 }
 
 export async function deleteCustomer(id: number) {
+  await requireAuth();
   return prisma.customer.delete({ where: { id } });
 }
 
@@ -236,6 +240,7 @@ export async function getUnpaidInvoicesForPeriod(period?: string) {
 }
 
 export async function payInvoice(id: number) {
+  await requireAuth();
   const inv = await prisma.invoice.update({
     where: { id },
     data: { status: "paid", paidAt: new Date() },
@@ -258,6 +263,7 @@ export async function payInvoice(id: number) {
 }
 
 export async function generateInvoicesForPeriod(period?: string) {
+  await requireAuth();
   const p = period || currentPeriod();
   const customers = await prisma.customer.findMany({
     where: { status: "active" },
@@ -317,4 +323,8 @@ export async function listPeriods() {
     orderBy: { billingPeriod: "desc" },
   });
   return rows.map((r) => r.billingPeriod);
+}
+
+export async function getAuthUser() {
+  return getCurrentUser();
 }

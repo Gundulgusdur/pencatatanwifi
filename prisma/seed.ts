@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -74,7 +75,22 @@ async function main() {
     });
   }
 
-  console.log("Seed selesai: paket, pelanggan & tagihan contoh telah dibuat.");
+  // Admin user default
+  const adminEmail = "admin@pencatatanwifi.local";
+  const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
+  if (!existingAdmin) {
+    await prisma.user.create({
+      data: {
+        name: "Administrator",
+        email: adminEmail,
+        password: await bcrypt.hash("admin123", 12),
+        role: "admin",
+      },
+    });
+    console.log("Admin user dibuat: email=admin@pencatatanwifi.local, password=admin123");
+  }
+
+  console.log("Seed selesai: paket, pelanggan, tagihan & admin user telah dibuat.");
 }
 
 main()

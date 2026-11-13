@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { getAuthUser } from "@/app/(app)/actions";
 
 const nav = [
   { href: "/", label: "Dashboard", icon: "fa-home" },
@@ -13,11 +14,44 @@ const nav = [
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [user, setUser] = useState<{ id: number; name: string; email: string; role: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    setSidebarOpen(false);
-  }, [pathname]);
+    (async () => {
+      try {
+        const u = await getAuthUser();
+        setUser(u);
+        if (!u) {
+          router.push("/auth/login");
+        }
+      } catch {
+        router.push("/auth/login");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [router]);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // ignore
+    }
+    router.push("/auth/login");
+    router.refresh();
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -56,9 +90,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
-        <div className="pw-sidebar-footer d-flex flex-column">
-          <div className="fw-bold">v1.0 MVP</div>
-          <div>ISP Billing Simple</div>
+        <div className="pw-sidebar-footer d-flex flex-column p-3 border-top">
+          {user && (
+            <>
+              <div className="fw-bold text-sm">{user.name}</div>
+              <div className="text-muted small">{user.role}</div>
+              <button
+                onClick={handleLogout}
+                className="mt-2 w-auto btn btn-outline-danger btn-sm"
+              >
+                <i className="fas fa-sign-out-alt me-1"></i> Keluar
+              </button>
+            </>
+          )}
+          <div className="fw-bold text-xs mt-2">v1.0 MVP</div>
+          <div className="text-muted text-xs">ISP Billing Simple</div>
         </div>
       </aside>
       <main className="pw-main">{children}</main>
