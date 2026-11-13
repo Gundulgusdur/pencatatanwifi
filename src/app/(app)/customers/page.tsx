@@ -82,7 +82,7 @@ export default function CustomersPage() {
       name: c.name,
       whatsapp: c.whatsapp,
       ipAddress: c.ipAddress ?? "",
-      packageId: String(c.packageName ? 0 : ""), // packageName shown; packageId not in row — simplify
+      packageId: "", // dropdown mulai kosong; pilih paket saat edit
       dueDateDay: String(c.dueDateDay),
       status: c.status,
     });
@@ -182,98 +182,96 @@ export default function CustomersPage() {
       </div>
 
       {/* Modal */}
-      <div
-        className={`modal fade ${open ? "show d-block" : "d-none"}`}
-        style={{ display: open ? "block" : "none" }}
-        tabIndex={-1}
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="pw-modal-content">
-            <div className="pw-modal-header">
-              <h5 className="modal-title">
-                {mode === "create" ? "Tambah Pelanggan" : "Edit Pelanggan"}
-              </h5>
-              <button
-                className="btn-close"
-                onClick={() => setOpen(false)}
-              ></button>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="pw-modal-body">
-                <div className="row g-3">
-                  <div className="col-12">
-                    <label className="form-label fw-medium">Nama Lengkap Pelanggan</label>
-                    <input
-                      className="form-control"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div className="col-12">
-                    <label className="form-label fw-medium">Nomor WhatsApp</label>
-                    <input
-                      className="form-control"
-                      value={form.whatsapp}
-                      onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-                      placeholder="628123456789"
-                      required
-                    />
-                    <div className="form-text">Otomatis diformat ke 628xxx untuk kirim struk.</div>
-                  </div>
-                  <div className="col-12">
-                    <label className="form-label fw-medium">Pilihan Paket & Harga</label>
-                    <select
-                      className="form-select"
-                      value={form.packageId}
-                      onChange={(e) => setForm({ ...form, packageId: e.target.value })}
-                      required
-                    >
-                      <option value="">-- Pilih Paket --</option>
-                      {packages.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.packageName}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="col-12">
-                    <label className="form-label fw-medium">IP Address / ID PPPoE / Lokasi</label>
-                    <input
-                      className="form-control"
-                      value={form.ipAddress}
-                      onChange={(e) => setForm({ ...form, ipAddress: e.target.value })}
-                      placeholder="Opsional"
-                    />
-                  </div>
-                  <div className="col-12">
-                    <label className="form-label fw-medium">Tanggal Jatuh Tempo (1-28)</label>
-                    <input
-                      className="form-control"
-                      type="number"
-                      min="1"
-                      max="28"
-                      value={form.dueDateDay}
-                      onChange={(e) => setForm({ ...form, dueDateDay: e.target.value })}
-                      defaultValue={new Date().getDate()}
-                      required
-                    />
+      {open && (
+        <div className="pw-modal-wrap open" tabIndex={-1} role="dialog" aria-modal="true">
+          <div className="pw-modal-backdrop" onClick={() => setOpen(false)}></div>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="pw-modal-content">
+              <div className="pw-modal-header">
+                <h5 className="modal-title">
+                  {mode === "create" ? "Tambah Pelanggan" : "Edit Pelanggan"}
+                </h5>
+                <button
+                  className="btn-close"
+                  onClick={() => setOpen(false)}
+                ></button>
+              </div>
+              <form onSubmit={handleSubmit}>
+                <div className="pw-modal-body">
+                  <div className="row g-3">
+                    <div className="col-12">
+                      <label className="form-label fw-medium">Nama Lengkap Pelanggan</label>
+                      <input
+                        className="form-control"
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label fw-medium">Nomor WhatsApp</label>
+                      <input
+                        className="form-control"
+                        value={form.whatsapp}
+                        onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
+                        placeholder="628123456789"
+                        required
+                      />
+                      <div className="form-text">Otomatis diformat ke 628xxx untuk kirim struk.</div>
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label fw-medium">Pilihan Paket & Harga</label>
+                      <select
+                        className="form-select"
+                        value={form.packageId}
+                        onChange={(e) => setForm({ ...form, packageId: e.target.value })}
+                        required
+                      >
+                        <option value="">-- Pilih Paket --</option>
+                        {packages.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.packageName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label fw-medium">IP Address / ID PPPoE / Lokasi</label>
+                      <input
+                        className="form-control"
+                        value={form.ipAddress}
+                        onChange={(e) => setForm({ ...form, ipAddress: e.target.value })}
+                        placeholder="Opsional"
+                      />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label fw-medium">Tanggal Jatuh Tempo (1-28)</label>
+                      <input
+                        className="form-control"
+                        type="number"
+                        min="1"
+                        max="28"
+                        value={form.dueDateDay}
+                        onChange={(e) => setForm({ ...form, dueDateDay: e.target.value })}
+                        defaultValue={new Date().getDate()}
+                        required
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="pw-modal-footer">
-                <button type="button" className="btn btn-outline-secondary" onClick={() => setOpen(false)}>
-                  Batal
-                </button>
-                <button type="submit" className="btn btn-pw-primary" disabled={loading}>
-                  {mode === "create" ? "Simpan Pelanggan" : "Perbarui"}
-                </button>
-              </div>
-            </form>
+                <div className="pw-modal-footer">
+                  <button type="button" className="btn btn-outline-secondary" onClick={() => setOpen(false)}>
+                    Batal
+                  </button>
+                  <button type="submit" className="btn btn-pw-primary" disabled={loading}>
+                    {mode === "create" ? "Simpan Pelanggan" : "Perbarui"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-        <div className="modal-backdrop fade show" style={{ display: open ? "block" : "none" }}></div>
-      </div>
+      )}
     </div>
   );
 }
